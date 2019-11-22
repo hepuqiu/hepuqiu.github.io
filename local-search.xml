@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>Hexo分享</title>
+    <link href="undefined2019/11/22/Hexo%E5%88%86%E4%BA%AB/"/>
+    <url>2019/11/22/Hexo%E5%88%86%E4%BA%AB/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Hexo简介及使用"><a href="#Hexo简介及使用" class="headerlink" title="Hexo简介及使用"></a>Hexo简介及使用</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>其实之前自己没有写过blog，之后想要把自己沉淀的一些东西记下来，所以就想着搭建一个个人博客网站，目前<a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener" title="hexo">hexo</a>被广泛使用，而且社区里有很多主题可以选择，所以就选它了！本篇主要包含以下内容：</p><ol><li>Hexo简介</li><li>Hexo安装</li><li>简单使用</li><li>部署到github</li></ol><h2 id="Hexo简介"><a href="#Hexo简介" class="headerlink" title="Hexo简介"></a>Hexo简介</h2><h4 id="什么是Hexo"><a href="#什么是Hexo" class="headerlink" title="什么是Hexo?"></a>什么是Hexo?</h4><p>Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p><h4 id="Hexo的优势"><a href="#Hexo的优势" class="headerlink" title="Hexo的优势"></a>Hexo的优势</h4><ul><li>快速上手 - 用node安装使用Hexo</li><li>部署简单，可一键部署</li><li>强大的主题和插件体系</li></ul><h2 id="Hexo安装"><a href="#Hexo安装" class="headerlink" title="Hexo安装"></a>Hexo安装</h2><h4 id="安装前提"><a href="#安装前提" class="headerlink" title="安装前提"></a>安装前提</h4><ul><li><a href="https://nodejs.org/en/" target="_blank" rel="noopener" title="Node.js">Node.js</a>(Node.js 版本需不低于 8.6，建议使用 Node.js 10.0 及以上版本)</li><li><a href="https://git-scm.com/" target="_blank" rel="noopener" title="Git">Git</a></li></ul><h4 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h4><p>安装命令</p><p><code>$ npm install hexo</code></p><p>使用hexo命令</p><p><code>$ npx hexo &lt;command&gt;</code></p><h4 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h4><p>新建文件夹</p><pre><code>$ hexo init &lt;folder&gt;$ cd &lt;folder&gt;$ npm install</code></pre><p>新建一篇文章</p><p><code>$ hexo new [layout] title</code></p><p>生成静态文件</p><pre><code>$ hexo clean$ hexo generate</code></pre><p>启动服务器</p><p><code>$ hexo server</code></p><h4 id="部署到github"><a href="#部署到github" class="headerlink" title="部署到github"></a>部署到github</h4><p>安装插件 <a href="https://github.com/hexojs/hexo-deployer-git" target="_blank" rel="noopener" title="hexo-deployer-git">hexo-deployer-git</a></p><p><code>npm install hexo-deployer-git --save</code></p><p>修改_config.yml 中的配置</p><pre><code>deploy：    type: git    repo: https://github.com/yourName/yourName.github.io    branch: &#39;master&#39;</code></pre><p>执行命令 <code>hexo deploy</code> 将静态页面推到github</p><h4 id="个性化修改"><a href="#个性化修改" class="headerlink" title="个性化修改"></a>个性化修改</h4>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>浅谈JS防抖和节流</title>
+    <link href="undefined2019/11/22/%E6%B5%85%E8%B0%88JS%E9%98%B2%E6%8A%96%E5%92%8C%E8%8A%82%E6%B5%81/"/>
+    <url>2019/11/22/%E6%B5%85%E8%B0%88JS%E9%98%B2%E6%8A%96%E5%92%8C%E8%8A%82%E6%B5%81/</url>
+    
+    <content type="html"><![CDATA[<h1 id="浅谈JS防抖和节流"><a href="#浅谈JS防抖和节流" class="headerlink" title="浅谈JS防抖和节流"></a>浅谈JS防抖和节流</h1><p>在窗口scroll、resize,输入框内容改变时，需要对调用事件处理函数的频率加以限制，如果放任不管或处理不当，可能大量消耗浏览器资源，甚至导致浏览器卡死，带来非常差的用户体验。此时，我们可以采用防抖(debounce)和节流(throttle)来限制事件处理函数调用频率。</p><h2 id="防抖-debounce"><a href="#防抖-debounce" class="headerlink" title="防抖(debounce)"></a>防抖(debounce)</h2><p><strong>定义</strong>：设定一个时间段，当持续触发事件时，上一次触发事件后，一定时间内没有继续触发事件，才会调用事件处理函数；在给定时间段之前又一次触发了事件，就重新延时。</p><p>简单的debounce实现</p><pre><code class="javascript">/****@param {Function} fn 需要进行防抖的函数*@param {number} delay 防抖时间间隔，毫秒**/const debounce = (fn, delay) =&gt; {    let timeout = null;    return (...args) =&gt; {        const self = this;        if (timeout) {            clearTimeout(timeout); // 计时过程中再次触发事件，清除计时器，重新计时        }        timeout = setTimeout(() =&gt; {            fn.apply(self, args);        }, delay || 500);    };};</code></pre><p><strong>效果</strong>： 当持续触发事件，时间间隔都小于设定时间段时，只会在最后执行一次事件处理函数。</p><h2 id="节流-throttle"><a href="#节流-throttle" class="headerlink" title="节流(throttle)"></a>节流(throttle)</h2><p><strong>定义</strong>：设定一个时间段，当持续触发事件时，每间隔一段时间，调用一次事件处理函数。就像字面意思一样，将调用事件处理函数的频率减小。<br>简单的throttle实现</p><pre><code class="javascript">/****@param {Function} fn 需要进行节流的函数*@param {Number} delay 时间间隔，毫秒**/const throttle = (fn, delay) =&gt; {    let pre = Date.now();    return (...args) =&gt; {        const self = this;        const now = new Date();        if (now - pre &gt; delay) { // 判断时间间隔是否大于给定时间来执行事件处理函数            fn.apply(self, args);            pre = now; // 当前函数执行时的时间作为计算下次函数执行时间的起始时间        }    };};</code></pre><p><strong>效果</strong>： 当持续触发事件时，每隔一段时间，执行一次事件处理函数。</p><h2 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h2><p>当两者的触发条件完全一致，设定的时间间隔也一致，且触发时间都小于设定的时间时，函数防抖只会在最后执行一次事件处理函数，函数节流固定且持续的在设定的时间段内执行一次</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  
+</search>
